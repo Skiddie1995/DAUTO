@@ -31,23 +31,30 @@ update_system()
 
   #Installing the community version of Docker
   apt install -y docker-ce docker-compose
+  
+  #Change memory map count to allow docker execution of multiple hosts
+  sysctl -w vm.max_map_count=262144
 }
 
 #Function to create the docker-compose YML file
 write_dcompose()
 {
-#  if [ -e ./docker-compose.yml ]
-#  then
-#    rm -f ./docker-compose.yml
+#  if [ -e ./docker-compose.yml ] !!! THIS is wrong. You don't need to check
+#  then                               for the existence of the file... Just overwrite it
+#    rm -f ./docker-compose.yml       or R U going to ask for user input??
 #    write_dcompose
 #  else
 #  echo "" > ./docker-compose.yml
 #  fi
 echo $elnodes
 }
-############################################################################################################
+#Function to download Elastic images (This function should be used to download all images on the future... I think)
+download_images_elastic()
+{
+  curl -s https://www.docker.elastic.co/r/elasticsearch | hxnormalize -x | grep "docker pull"| tr -d '"' | awk '{print $3}' | grep amd | sed -n 2p
+#################END OF FUNTIONS###################################################################################
 
-###MAIN###
+###MAIN IF###
 
 ###Update
 if [ "$1" == "-u" ]
@@ -57,7 +64,13 @@ then
 ####Load Docker Compose file
 elif [ "$1" == "-f" ]
 then
-  echo teste
+  if [ -z $2 ]
+  then
+    echo "You must inform your YML path after the -f option"
+    exit 2
+  else
+    docker-compose up -f $2
+    fi
 
 
 ####Delk option - Docker, ElasticSearch Kibana automation
@@ -68,11 +81,13 @@ then
     echo "You must inform the number of ElastiSearch nodes you want"
   else
   elnodes=$2
+  download_images_elastic
   write_dcompose
   fi
 
 ###No user input
 else
-  echo error
-  exit 1
+  echo "This script requires certain parameters"
+  exit 1 ## Exit 1 is a no user input error
 fi
+### END OF MAIN IF###

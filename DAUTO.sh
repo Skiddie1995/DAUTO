@@ -17,7 +17,7 @@ update_system()
   ###PLEASE IMPLEMENT ME
 
   # Installing a bunch of useful shit
-  apt install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common
+  apt install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common html-xml-utils
 
 
   #Adding the Docker repo GPG keys
@@ -39,19 +39,14 @@ update_system()
 #Function to create the docker-compose YML file
 write_dcompose()
 {
-#  if [ -e ./docker-compose.yml ] !!! THIS is wrong. You don't need to check
-#  then                               for the existence of the file... Just overwrite it
-#    rm -f ./docker-compose.yml       or R U going to ask for user input??
-#    write_dcompose
-#  else
-#  echo "" > ./docker-compose.yml
-#  fi
-echo $elnodes
+	echo -e "version: '$version'\nservices:\n\t"
 }
 #Function to download Elastic images (This function should be used to download all images on the future... I think)
 download_images_elastic()
 {
-  curl -s https://www.docker.elastic.co/r/elasticsearch | hxnormalize -x | grep "docker pull"| tr -d '"' | awk '{print $3}' | grep amd | sed -n 2p
+	image=$(curl -s https://www.docker.elastic.co/r/elasticsearch | hxnormalize -x | grep "docker pull"| tr -d '"' | awk '{print $3}' | grep amd | sed -n 2p)
+	docker pull $image
+}
 #################END OF FUNTIONS###################################################################################
 
 ###MAIN IF###
@@ -81,6 +76,7 @@ then
     echo "You must inform the number of ElastiSearch nodes you want"
   else
   elnodes=$2
+  update_system
   download_images_elastic
   write_dcompose
   fi

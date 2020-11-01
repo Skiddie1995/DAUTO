@@ -4,8 +4,13 @@
 ## HARD HAT OBLIGATORY ##
 #########################
 
-Warning: To create the new docker-compose, this script will delete any files named "docker-compose.yml" on the current directory. Be sure to backup and move your stuff!
+Hey you! Yeah, you! Are you constantly changing your workspace and in need of reeinstalling Docker over and over again? 
 
-You can also use the option -f to update Docker on a new host, and feed your own docker-compose file.
+Are you tired of having to add the Docker repo, dowloading the images AND having to write your own docker-compose.yml just to get a simple Docker network? 
 
-More instructions to come...
+Are you alway forgeting the command to resize the vm.max_map count? Then this Bash script might be just what you need!
+
+
+
+
+

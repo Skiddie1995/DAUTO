@@ -41,11 +41,18 @@ write_dcompose()
 {
 	echo -e "version: '$version'\nservices:\n\t"
 }
+
 #Function to download Elastic images (This function should be used to download all images on the future... I think)
-download_images_elastic()
+download_image_elastic()
 {
-	image=$(curl -s https://www.docker.elastic.co/r/elasticsearch | hxnormalize -x | grep "docker pull"| tr -d '"' | awk '{print $3}' | grep amd | sed -n 2p)
-	docker pull $image
+	image_el=$(curl -s https://www.docker.elastic.co/r/elasticsearch | hxnormalize -x | grep "docker pull"| tr -d '"' | awk '{print $3}' | grep amd | sed -n 2p)
+	docker pull $image_el
+}
+
+dowload_image_kibana()
+{
+	image_ki=$(curl -s https://www.docker.elastic.co/r/kibana | hxnormalize -x | grep "docker pull"| tr -d '"' | awk '{print $3}' | sed -n 2p)
+docker pull $image_ki
 }
 #################END OF FUNTIONS###################################################################################
 
@@ -77,7 +84,7 @@ then
   else
   elnodes=$2
   update_system
-  download_images_elastic
+  download_image_elastic
   write_dcompose
   fi
 
